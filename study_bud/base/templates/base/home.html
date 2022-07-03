@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <h1>Welcome To home page</h1>
+    {% for room in rooms%}
+    <div>
+        <span> @{{room.host.username}} </span>
+   <h2>
+   {{room.id}} -- <a href="{%url 'room' room.id%}"> {{room.name}} </a>
+   </h2>
+   <br>
+   <small>->{{room.topic.name}}</small>
+</div>
+{%endfor%}
+</body>
+</html>
