@@ -1,13 +1,22 @@
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
-
+from django.db.models import Q
 from .forms import RoomForm
-from .models import Room
+from .models import Room,Topic
 # Create your views here.
 
 def home (request):
-    rooms=Room.objects.all()
-    context={'rooms':rooms}
+    q=request.GET.get('q') if request.GET.get('q')!=None else ''
+    #Implementing The Dynamic Searching Functionality
+    rooms=Room.objects.filter(
+        Q(topic__name__contains=q) |
+        Q (name__icontains=q)|
+        Q(description__icontains=q)
+        )
+    
+    topics = Topic.objects.all()
+    room_count = rooms.count()
+    context={'rooms':rooms,'topics':topics,'room_count':room_count}
     return render(request,'base/home.html',context)
 
 def room(request,pk):
@@ -42,10 +51,9 @@ def updateRoom (request,pk):
     
     return render(request,'base/room_form.html',context)
 
-
 def deleteRoom(request,pk):
     room=Room.objects.get(id=pk)
-    if request.method== 'POST':
+    if request.method == 'POST':
         room.delete()
         print("Deletion succesful")
   
@@ -53,3 +61,5 @@ def deleteRoom(request,pk):
 
     context={'obj':room}
     return render(request,'base/delete.html',context)
+
+
