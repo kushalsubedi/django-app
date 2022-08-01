@@ -1,9 +1,39 @@
+
+from distutils.log import error
+from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.db.models import Q
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate,login,logout
 from .forms import RoomForm
 from .models import Room,Topic
+
 # Create your views here.
+
+
+def loginPage(request):
+    if request.method == 'POST':
+        username=request.POST.get('username')
+        password=request.POST.get('password')
+
+        try:
+            user=User.objects.get(username=username)
+        except:
+            messages.error(request,'User does not Exixt')
+
+        user = authenticate(request,username=username,password=password)
+
+        if user is not None:
+            login(request,user)
+            return redirect('home')
+        else:
+             message=error(request,'Username or password does not exist ')
+
+
+   
+    context ={}
+    return render (request,'base/login_register.html',context)
 
 def home (request):
     q=request.GET.get('q') if request.GET.get('q')!=None else ''
