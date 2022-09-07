@@ -31,24 +31,18 @@
             <h1>Create Room</h1>
 
         </a>
-        <h1>Welcome To home page</h1>
-        <hr>
-        <hr>
-        <hr> {% for room in rooms%}
-        <br>
-        <a href="{%url 'update' room.id%}">
-             Edit 
-        </a>
-
-        <a href="{%url 'delete' room.id%}">
-            Delete
-            </a>
-        <br>
         <div>
+         {% for room in rooms%}
+        <div>
+            {% if request.user == room.host %}
+        <a href="{%url 'update' room.id%}">Edit </a>
+
+        <a href="{%url 'delete' room.id%}">Delet </a>
+        {% endif %}
             <span> @{{room.host.username}} </span>
-            <h2>
+            <h5>
                 {{room.id}} -- <a href="{%url 'room' room.id%}"> {{room.name}} </a>
-            </h2>
+            </h5>
             <br>
             <small> -->{{room.topic.name}}</small>
         </div>
@@ -57,4 +51,8 @@
     </div>
 
 </div>
+</div>
+<script>
+   
+</script>
 {% endblock %}
