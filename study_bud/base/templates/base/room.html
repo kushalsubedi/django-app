@@ -1,14 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Room page</h1>
 
-  <h1> {{room.id}}....{{room.name}}</h1> 
-</body>
-</html>
+{% extends 'main.html' %}
+{% block content%}
+<h1>Room page</h1>
+
+<h1> {{room.id}}....{{room.name}} </h1> 
+<p>{{room.description}}</p>
+  <div class="comment-wrapper">
+    <h3>Conversations</h3>
+    <hr>
+    {% for message in room_message %}
+    <div>
+      <small> 
+        @{{message.user}} {{mesage.created|timesince}} ago
+      </small>
+      <p>{{message.body}}</p>
+    </div>
+    {% endfor %}
+  </div>
+{% if request.user.is_authenticated %}
+  <div class="comment-form">
+    <form action="" method="post">
+      {%csrf_token%}
+      <input type="text" name = "body" placeholder = "write your message here" />
+      <input type="submit" value="Submit" />
+    </form>
+  </div>
+  {% endif %}
+{% endblock %}
