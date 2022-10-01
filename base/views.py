@@ -1,4 +1,3 @@
-from distutils.log import error
 from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -32,10 +31,9 @@ def loginPage(request):
             login(request, user)
             return redirect("home")
         else:
-            messages.error(request, "Username or password does not exist ")
+            messages.error(request, "User ")
 
-    context = {}
-    return render(request, "base/login_register.html", context)
+    return render(request, "base/login_register.html")
 
 
 def logoutUser(request):
@@ -56,22 +54,24 @@ def home(request):
     return render(request, "base/home.html", context)
 
 
+@login_required
 def room(request, pk):
     room = Room.objects.get(id=pk)
     room_messages = room.message_set.all().order_by("-created")
 
     if request.method == "POST":
-        message = Message.objects.create(
+        Message.objects.create(
             user=request.user, room=room, body=request.POST.get("body")
         )
         return redirect("room", pk=room.id)
     context = {"room": room, "room_messages": room_messages}
+    print(context)
 
     return render(request, "base/room.html", context)
 
 
-@login_required(login_url="login")
-def CreateRoom(request):
+@login_required
+def createRoom(request):
     form = RoomForm()
     if request.method == "POST":
         form = RoomForm(request.POST)
@@ -82,7 +82,7 @@ def CreateRoom(request):
     return render(request, "base/room_form.html", context)
 
 
-@login_required(login_url="login")
+@login_required
 def updateRoom(request, pk):
     room = Room.objects.get(id=pk)
     form = RoomForm(instance=room)
@@ -101,7 +101,7 @@ def updateRoom(request, pk):
     return render(request, "base/room_form.html", context)
 
 
-@login_required(login_url="login")
+@login_required
 def deleteRoom(request, pk):
     room = Room.objects.get(id=pk)
     if request.user != room.host:
