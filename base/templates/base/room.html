@@ -8,10 +8,10 @@
   <div class="comment-wrapper">
     <h3>Conversations</h3>
     <hr>
-    {% for message in room_message %}
+    {% for message in room_messages %}
     <div>
       <small> 
-        @{{message.user}} {{mesage.created|timesince}} ago
+        @{{message.user}} {{message.created|timesince}} ago
       </small>
       <p>{{message.body}}</p>
     </div>
